@@ -146,7 +146,6 @@ $(document).ready(function (){
 		$output2.val(out.name+'\n'+[out.index, out.rgn, out.addr].join(', ')+tabs);
 
 	};
-	bind_to_storage($input, 'addr_input', parse_addr);
-	bind_to_storage($output, 'addr_output');
+	bind_to_storage($input, 'addr_input', parse_addr).change();
 
 });
