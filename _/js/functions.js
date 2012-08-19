@@ -30,6 +30,16 @@ function get_val(key) {
 			}, 0);
 		});
 	};
+	Array.prototype.filter = function(filter) {
+		var output = new Array();
+		for (var i = 0; i < this.length; i++) {
+			var el = this[i];
+			if (filter(el)) {
+				output.push(el)
+			}
+		}
+		return output;
+	};
 	Array.prototype.trim = function() {
 		return this.map(function(e) {return $.trim(e)});
 	};
@@ -98,6 +108,7 @@ $(document).ready(function (){
 
 	var parse_addr = function(val) {
 		var val = val.split('\n').trim();
+		val = val.filter(function(e) {return e;})
 		if (val.length > 3) {
 			var out = parse_order(val);
 		} else {
