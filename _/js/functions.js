@@ -83,6 +83,15 @@ $(document).ready(function (){
 		return [name, rgn, addr, index];
 	}
 
+	var format_name_string = function(val) {
+		return val
+			.replace(/муниципальное унитарное предприятие/i, "МУП")
+			.replace(/общество с ограниченной ответственностью/i, "ООО")
+			.replace(/открытое акционерное общество/i, "ОАО")
+			.replace(/закрытое акционерное общество/i, "ЗАО")
+			.trim();
+	}
+
 	var format_addr_string = function(val) {
 		var split_join_dot = function(string) {return string.split_join('.', '. ')}; // д.6 -> д. 6 
 		val = val.split(',').trim().map(split_join_dot).join(', '); // г. Москва,д. 6 -> г. Москва, д. 6 
@@ -90,6 +99,7 @@ $(document).ready(function (){
 			.replace(". ,", '.,') // обл. , -> обл.,
 			.replace("область", "обл.")
 			.replace("район", "р-н")
+			.replace("р-он", "р-н")
 			.trim();
 	}
 
@@ -98,6 +108,7 @@ $(document).ready(function (){
 		  , rgn = val[1]
 		  , addr = val[2]
 		  , index = val[3];
+		name = format_name_string(name);
 		addr = format_addr_string(addr);
 		rgn = format_addr_string(rgn);
 		addr = addr
