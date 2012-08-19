@@ -97,6 +97,7 @@ $(document).ready(function (){
 		val = val.split(',').trim().map(split_join_dot).join(', '); // г. Москва,д. 6 -> г. Москва, д. 6 
 		return val
 			.replace(". ,", '.,') // обл. , -> обл.,
+			.replace(/россия,/i, "")
 			.replace("область", "обл.")
 			.replace("район", "р-н")
 			.replace("р-он", "р-н")
@@ -112,7 +113,7 @@ $(document).ready(function (){
 		addr = format_addr_string(addr);
 		rgn = format_addr_string(rgn);
 		addr = addr
-			.replace(rgn+", ", '')
+			.replace(rgn+", ", '') // удаляем регион из адреса (если он продублирован)
 			.trim();
 		return [name, rgn+',', addr, index];
 	}
