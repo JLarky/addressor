@@ -84,9 +84,9 @@ $(document).ready(function (){
 		// бывает так, что после индекса нет запятой
 		var index_tail = index.substring(6).trim();
 		if (index_tail) {
+			index = index.substring(0,6);
 			full_addr = [index_tail].concat(full_addr);
 		}
-		console.log(index_tail);
 		var rgn = full_addr.splice(0,1)
 		  , addr = full_addr.join(', ');
 		return [name, rgn, addr, index];
@@ -141,7 +141,7 @@ $(document).ready(function (){
 		out = format_addr(out);
 		var title = JSON.stringify(out, null, 2);
 		$output.attr('title', title);
-		$output.val([out.name, out.rgn, out.addr, out.index].join('\t'));
+		$output.val([out.name, out.rgn+',', out.addr, out.index].join('\t'));
 		var tabs = '\t\t\t';
 		$output2.val(out.name+'\n'+[out.index, out.rgn, out.addr].join(', ')+tabs);
 
