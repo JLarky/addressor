@@ -162,8 +162,9 @@ body {
 }
 
 .input,
-.output {
-	height: 45%;
+.output,
+.output2 {
+	height: 32%;
 }
 
 .title {

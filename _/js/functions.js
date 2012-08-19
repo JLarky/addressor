@@ -57,8 +57,11 @@ function get_val(key) {
 $(document).ready(function (){
 
 	// your functions go here
+	var nbsp = ' ';
+
 	var $input =$("#addr_input")
-	  , $output = $("#addr_output");
+	  , $output = $("#addr_output")
+	  , $output2 = $("#addr_output2");
 
 	var parse_order = function(val) {
 		var index = val[0]
@@ -75,9 +78,15 @@ $(document).ready(function (){
 
 		for (var i = 0; i < full_addr.length; i++) {
 			if (!!full_addr[i].match(/\d{6}/)) { // индекс
-				index = full_addr.splice(i, 1);
+				index = full_addr.splice(i, 1)[0];
 			}
 		}
+		// бывает так, что после индекса нет запятой
+		var index_tail = index.substring(6).trim();
+		if (index_tail) {
+			full_addr = [index_tail].concat(full_addr);
+		}
+		console.log(index_tail);
 		var rgn = full_addr.splice(0,1)
 		  , addr = full_addr.join(', ');
 		return [name, rgn, addr, index];
@@ -93,10 +102,10 @@ $(document).ready(function (){
 	}
 
 	var format_addr_string = function(val) {
-		var split_join_dot = function(string) {return string.split_join('.', '. ')}; // д.6 -> д. 6 
+		var split_join_dot = function(string) {return string.split_join('.', '.'+nbsp)}; // д.6 -> д. 6 
 		val = val.split(',').trim().map(split_join_dot).join(', '); // г. Москва,д. 6 -> г. Москва, д. 6 
 		return val
-			.replace(". ,", '.,') // обл. , -> обл.,
+			.replace("."+nbsp+",", '.,') // обл. , -> обл.,
 			.replace(/россия,/i, "")
 			.replace("область", "обл.")
 			.replace("район", "р-н")
@@ -115,22 +124,27 @@ $(document).ready(function (){
 		addr = addr
 			.replace(rgn+", ", '') // удаляем регион из адреса (если он продублирован)
 			.trim();
-		return [name, rgn+',', addr, index];
+		return {name: name, rgn: rgn, addr: addr, index: index};
 	}
 
 	var parse_addr = function(val) {
 		var val = val.split('\n').trim();
 		val = val.filter(function(e) {return e;})
-		if (val.length > 3) {
+		console.log(val);
+		if (val.length > 2) {
 			var out = parse_order(val);
 		} else {
+			// чем больше запятых тем больше шанс, что это адрес, а не название организации
+			val = val.sort(function(a,b) {return b.split(',').length-a.split(',').length;})
 			var out = parse_update(val);
 		}
 		out = out.trim()
 		out = format_addr(out);
 		console.log(out);
-		out = out.join('\t')
-		$output.val(out);
+		$output.val([out.name, out.rgn, out.addr, out.index].join('\t'));
+		var tabs = '\t\t\t';
+		$output2.val(out.name+'\n'+[out.index, out.rgn, out.addr].join(', ')+tabs);
+
 	};
 	bind_to_storage($input, 'addr_input', parse_addr);
 	bind_to_storage($output, 'addr_output');
