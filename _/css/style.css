@@ -162,9 +162,8 @@ body {
 }
 
 .input,
-.output,
-.output2 {
-	height: 32%;
+.output {
+	height: 19%;
 }
 
 .title {
@@ -173,7 +172,7 @@ body {
 }
 
 .title span {
-	top: 50%;
+	top: 30%;
 	position: absolute;
 }
 
@@ -182,8 +181,18 @@ textarea {
 	width: 100%;
 }
 
+input {
+	height: 40%;
+	width: 100%;
+}
+
 #addr_output {
 	white-space: pre-line;
+}
+
+.output textarea,
+.output input {
+	background: #eee;
 }
 
 /* Print styles!

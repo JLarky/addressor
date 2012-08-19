@@ -32,7 +32,7 @@
 	<!-- all our JS is at the bottom of the page, except for Modernizr. -->
 	<script src="_/js/modernizr-1.7.min.js"></script>
 	<script src='_/js/jquery-1.5.1.min.js'></script>
-
+	<script src='_/js/number_to_string.js'></script>
 </head>
 
 <body>
@@ -44,14 +44,25 @@
 		<textarea id="addr_input"></textarea>
 	</div>
 
+	<div class="input">
+		<div class="title"><span>Сумма; Номер договора:</span></div>
+		<textarea id="other_input"></textarea>
+	</div>
+
 	<div class="output">
 		<div class="title"><span>Организация	Регион	Адрес	Индекс</span></div>
 		<textarea id="addr_output"></textarea>
 	</div>
 
-	<div class="output2">
+	<div class="output">
 		<div class="title"><span>Наименование организации; Юридический адресс</span></div>
 		<textarea id="addr_output2"></textarea>
+	</div>
+
+	<div class="output">
+		<div class="title"><span>Сумма прописью; Имя файла</span></div>
+		<input id="addr_output3" value=""></input>
+		<input id="addr_output4" value=""></input>
 	</div>
 </div>
 

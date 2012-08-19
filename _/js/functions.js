@@ -23,10 +23,9 @@ function get_val(key) {
 		return $element.val(get_val(key)).bind('paste keyup change', function() {
 			var $this = $(this);
 			setTimeout(function() {
-				var val = $this.val();
-				save_val(key, val);
+				save_val(key, $this.val());
 				if (jQuery.isFunction(callback)) {
-					callback(val);
+					callback();
 				}
 			}, 0);
 		});
@@ -78,8 +77,12 @@ $(document).ready(function (){
 	var nbsp = ' ';
 
 	var $input =$("#addr_input")
+	  , $input2 = $("#other_input")
 	  , $output = $("#addr_output")
-	  , $output2 = $("#addr_output2");
+	  , $output2 = $("#addr_output2")
+	  , $output3 = $("#addr_output3")
+	  , $output4 = $("#addr_output4")
+	  , addr_output = {};
 
 	var parse_order = function(val) {
 		var index = val[0]
@@ -148,8 +151,8 @@ $(document).ready(function (){
 		return {name: name, rgn: rgn, addr: addr, index: index};
 	}
 
-	var parse_addr = function(val) {
-		var val = val.split('\n').trim();
+	var parse_addr = function() {
+		var val = $input.val().split('\n').trim();
 		val = val.filter(function(e) {return e;})
 		if (val.length > 2) {
 			var out = parse_order(val);
@@ -160,6 +163,7 @@ $(document).ready(function (){
 		}
 		out = out.trim()
 		out = format_addr(out);
+		addr_output = out;
 		var title = JSON.stringify(out, null, 2).replace(RegExp(nbsp, 'g'), '_');
 		$output.attr('title', title);
 		$output.val([out.name, out.rgn+',', out.addr, out.index].join('\t'));
@@ -167,6 +171,27 @@ $(document).ready(function (){
 		$output2.val(out.name+'\n'+[out.index, out.rgn, out.addr].join(', ')+tabs);
 
 	};
-	bind_to_storage($input, 'addr_input', parse_addr).change();
 
+	var parse_sum = function() {
+		var val = $input2.val().split('\n').trim();
+		val = val.filter(function(e) {return e;});
+		var sum = val[0].replace(/\s/g, '')
+		  , code = val[1];
+		$output3.val(number_to_string(sum));
+		var filename=code+' '+addr_output['name'].replace(/"/g, '')
+		$output4.val(filename);
+		console.log(sum, code)
+	};
+
+	var change = function() {
+		parse_addr();
+		parse_sum();
+	};
+
+	bind_to_storage($input, 'addr_input', change);
+	bind_to_storage($input2, 'sum_input', change).change();
+
+	$("textarea, input").click(function() {
+		$(this).select()
+	})
 });
