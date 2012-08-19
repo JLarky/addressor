@@ -1,92 +1,112 @@
-// original version belongs to Ivan Ovsyannikov
-// http://art-blog.ru/blog/topic/60/
 
-// Edited by JLarky <jlarky@gmail.com>
+/*
+original version (PHP) belongs to runcore
+http://habrahabr.ru/post/53210/
 
-function number_to_string(_number) {
-		var _arr_numbers = new Array();
-		_arr_numbers[1] = new Array('', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять', 'десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать');
-		_arr_numbers[2] = new Array('', '', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто');
-		_arr_numbers[3] = new Array('', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот');
-		function number_parser(_num, _desc) {
-				var _string = '';
-				var _num_hundred = '';
-				if (_num.length == 3) {
-						_num_hundred = _num.substr(0, 1);
-						_num = _num.substr(1, 3);
-						_string = _arr_numbers[3][_num_hundred] + ' ';
-				}
-				if (_num < 20) _string += _arr_numbers[1][parseFloat(_num)] + ' ';
-				else {
-						var _first_num = _num.substr(0, 1);
-						var _second_num = _num.substr(1, 2);
-						_string += _arr_numbers[2][_first_num] + ' ' + _arr_numbers[1][_second_num] + ' ';
-				}              
-				switch (_desc){
-						case 0:
-								var _last_num = parseFloat(_num.substr(-1));
-								if (_last_num == 1) _string += 'рубль';
-								else if (_last_num > 1 && _last_num < 5) _string += 'рубля';
-								else _string += 'рублей';
-								break;
-						case 1:
-								var _last_num = parseFloat(_num.substr(-1));
-								if (_last_num == 1) _string += 'тысяча ';
-								else if (_last_num > 1 && _last_num < 5) _string += 'тысячи ';
-								else _string += 'тысяч ';
-								_string = _string.replace('один ', 'одна ');
-								_string = _string.replace('два ', 'две ');
-								break;
-						case 2:
-								var _last_num = parseFloat(_num.substr(-1));
-								if (_last_num == 1) _string += 'миллион ';
-								else if (_last_num > 1 && _last_num < 5) _string += 'миллиона ';
-								else _string += 'миллионов ';
-								break;
-						case 3:
-								var _last_num = parseFloat(_num.substr(-1));
-								if (_last_num == 1) _string += 'миллиард ';
-								else if (_last_num > 1 && _last_num < 5) _string += 'миллиарда ';
-								else _string += 'миллиардов ';
-								break;
-				}
-				_string = _string.replace('  ', ' ');
-				return _string;
-		}
-		function decimals_parser(_num) {
-				var _first_num = _num.substr(0, 1);
-				var _second_num = parseFloat(_num.substr(1, 2));
-				var _string = ' ' + _first_num + _second_num;
-				if (_second_num == 1) _string += ' копейка';
-				else if (_second_num > 1 && _second_num < 5) _string += ' копейки';
-				else _string += ' копеек';
-				return _string;
-		}
-		if (!_number || _number == 0) return false;
-		if (typeof _number !== 'number') {
-				_number = _number.replace(',', '.');
-				_number = parseFloat(_number);
-				if (isNaN(_number)) return false;
-		}
-		_number = _number.toFixed(2);
-		if(_number.indexOf('.') != -1) {
-				var _number_arr = _number.split('.');
-				var _number = _number_arr[0];
-				var _number_decimals = _number_arr[1];
-		}
-		var _number_length = _number.length;
-		var _string = '';
-		var _num_parser = '';
-		var _count = 0;
-		for (var _p = (_number_length - 1); _p >= 0; _p--) {
-				var _num_digit = _number.substr(_p, 1);
-				_num_parser = _num_digit +  _num_parser;
-				if ((_num_parser.length == 3 || _p == 0) && !isNaN(parseFloat(_num_parser))) {
-						_string = number_parser(_num_parser, _count) + _string;
-						_num_parser = '';
-						_count++;
-				}
-		}
-		if (_number_decimals) _string += decimals_parser(_number_decimals);
-		return _string;
-}
+Edited by JLarky <jlarky@gmail.com>
+ *
+ * Возвращает сумму прописью
+ * @ author runcore
+ * @ uses morph(...)
+ *
+*/
+
+
+(function() {
+  var morph, str_split;
+
+  window.number_to_string = function(num) {
+    var a20, gender, hundred, i1, i2, i3, kop, leading_zeros, nul, out, rub, ten, tens, uk, unit, v, zeros, _i, _len, _ref, _ref1, _ref2;
+    nul = 'ноль';
+    ten = [['', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'], ['', 'одна', 'две', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять']];
+    a20 = ['десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'];
+    tens = ['', '', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'];
+    hundred = ['', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот'];
+    unit = [['копейка', 'копейки', 'копеек', 1], ['рубль', 'рубля', 'рублей', 0], ['тысяча', 'тысячи', 'тысяч', 1], ['миллион', 'миллиона', 'миллионов', 0], ['миллиард', 'милиарда', 'миллиардов', 0]];
+    _ref = parseFloat(num).toFixed(2).split('.'), rub = _ref[0], kop = _ref[1];
+    if ((leading_zeros = 12 - rub.length) < 0) {
+      return false;
+    }
+    zeros = ((function() {
+      var _results;
+      _results = [];
+      while (leading_zeros--) {
+        _results.push('0');
+      }
+      return _results;
+    })());
+    rub = zeros.join('') + rub;
+    out = [];
+    if (rub > 0) {
+      _ref1 = str_split(rub, 3);
+      for (uk = _i = 0, _len = _ref1.length; _i < _len; uk = ++_i) {
+        v = _ref1[uk];
+        if (!(v > 0)) {
+          continue;
+        }
+        uk = unit.length - uk - 1;
+        gender = unit[uk][3];
+        _ref2 = str_split(v, 1), i1 = _ref2[0], i2 = _ref2[1], i3 = _ref2[2];
+        out.push(hundred[i1]);
+        if (i2 > 1) {
+          out.push(tens[i2] + ' ' + ten[gender][i3]);
+        } else {
+          out.push(i2 > 0 ? a20[i3] : ten[gender][i3]);
+        }
+        if (uk > 1) {
+          out.push(morph(v, unit[uk][0], unit[uk][1], unit[uk][2]));
+        }
+      }
+    } else {
+      out.push(nul);
+    }
+    out.push(morph(rub, unit[1][0], unit[1][1], unit[1][2]));
+    out.push(kop + ' ' + morph(kop, unit[0][0], unit[0][1], unit[0][2]));
+    return out.join(' ').replace(RegExp(' {2,}', 'g'), ' ').trimLeft();
+  };
+
+  /*
+   *
+   * Склоняем словоформу
+   * @ author runcore
+   *
+  */
+
+
+  morph = function(n, f1, f2, f5) {
+    n = n % 100;
+    if (n > 10 && n < 20) {
+      return f5;
+    }
+    n = n % 10;
+    if (n > 1 && n < 5) {
+      return f2;
+    }
+    if (n === 1) {
+      return f1;
+    }
+    return f5;
+  };
+
+  /* http://phpjs.org/functions/str_split:530
+  */
+
+
+  str_split = function(string, split_length) {
+    var chunks, len, pos;
+    if (string == null) {
+      string = "";
+    }
+    if (split_length == null) {
+      split_length = 1;
+    }
+    chunks = [];
+    pos = 0;
+    len = string.length;
+    while (pos < len) {
+      chunks.push(string.slice(pos, pos += split_length));
+    }
+    return chunks;
+  };
+
+}).call(this);
