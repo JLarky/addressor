@@ -49,6 +49,15 @@ function get_val(key) {
 	String.prototype.split_join = function(separator, delimiter) {
 		return this.split(separator).trim().join(delimiter);
 	};
+	String.prototype.add_dot = function(strings) {
+		var t = this;
+		strings.map(function(e) {
+			// 'обл ' -> 'обл. '
+			t = t.replace(RegExp("^"+e+' '), e+'. ')
+			     .replace(RegExp(" "+e+' '), ' '+e+'. ');
+		})
+		return t;
+	};
 	
 })(window.jQuery);
 
@@ -110,6 +119,8 @@ $(document).ready(function (){
 			.replace("область", "обл.")
 			.replace("район", "р-н")
 			.replace("р-он", "р-н")
+			.replace("пос", "п")
+			.add_dot(["обл", "г", "п", "ул", "д"])
 			.trim();
 	}
 
