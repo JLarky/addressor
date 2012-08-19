@@ -53,9 +53,17 @@ function get_val(key) {
 	String.prototype.add_dot = function(strings) {
 		var t = this;
 		strings.map(function(e) {
-			// 'обл ' -> 'обл. '
-			t = t.replace(RegExp("^"+e+' '), e+'.'+nbsp)
-			     .replace(RegExp(" "+e+' '), ' '+e+'.'+nbsp);
+			t = t.replace(RegExp("^"+e+'\\s'), e+'.'+nbsp) // 'ул ' -> 'ул._'
+			     .replace(RegExp("\\s"+e+'$'), ' '+e+'.') // ' обл' -> ' обл.'
+			     .replace(RegExp("\\s"+e+'\\s'), ' '+e+'.'+nbsp); // ' д ' -> ' д._'
+		})
+		return t;
+	};
+	String.prototype.prepend_nbsp = function(strings) {
+		var t = this;
+		strings.map(function(e) { // ' обл.' -> '_обл.'
+			t = t.replace(RegExp("\\s"+e+'$'), nbsp+e)
+			     .replace(RegExp("\\s"+e+','), nbsp+e+',');
 		})
 		return t;
 	};
@@ -122,7 +130,8 @@ $(document).ready(function (){
 			.replace("р-он", "р-н")
 			.replace("пос", "п")
 			.add_dot(["обл", "г", "п", "ул", "д"])
-			.trim();
+			.trim()
+			.prepend_nbsp(["обл.", "р-н"]);
 	}
 
 	var format_addr = function(val) {
