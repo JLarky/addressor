@@ -130,7 +130,6 @@ $(document).ready(function (){
 	var parse_addr = function(val) {
 		var val = val.split('\n').trim();
 		val = val.filter(function(e) {return e;})
-		console.log(val);
 		if (val.length > 2) {
 			var out = parse_order(val);
 		} else {
@@ -142,7 +141,6 @@ $(document).ready(function (){
 		out = format_addr(out);
 		var title = JSON.stringify(out, null, 2);
 		$output.attr('title', title);
-		console.log(out);
 		$output.val([out.name, out.rgn, out.addr, out.index].join('\t'));
 		var tabs = '\t\t\t';
 		$output2.val(out.name+'\n'+[out.index, out.rgn, out.addr].join(', ')+tabs);
