@@ -140,6 +140,8 @@ $(document).ready(function (){
 		}
 		out = out.trim()
 		out = format_addr(out);
+		var title = JSON.stringify(out, null, 2);
+		$output.attr('title', title);
 		console.log(out);
 		$output.val([out.name, out.rgn, out.addr, out.index].join('\t'));
 		var tabs = '\t\t\t';
