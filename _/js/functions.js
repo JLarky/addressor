@@ -18,6 +18,7 @@ function get_val(key) {
 
 // remap jQuery to $
 (function($){
+	var nbsp = ' ';
 	window.bind_to_storage = function($element, key, callback) {
 		return $element.val(get_val(key)).bind('paste keyup change', function() {
 			var $this = $(this);
@@ -53,8 +54,8 @@ function get_val(key) {
 		var t = this;
 		strings.map(function(e) {
 			// 'обл ' -> 'обл. '
-			t = t.replace(RegExp("^"+e+' '), e+'. ')
-			     .replace(RegExp(" "+e+' '), ' '+e+'. ');
+			t = t.replace(RegExp("^"+e+' '), e+'.'+nbsp)
+			     .replace(RegExp(" "+e+' '), ' '+e+'.'+nbsp);
 		})
 		return t;
 	};
@@ -150,7 +151,7 @@ $(document).ready(function (){
 		}
 		out = out.trim()
 		out = format_addr(out);
-		var title = JSON.stringify(out, null, 2);
+		var title = JSON.stringify(out, null, 2).replace(RegExp(nbsp, 'g'), '_');
 		$output.attr('title', title);
 		$output.val([out.name, out.rgn+',', out.addr, out.index].join('\t'));
 		var tabs = '\t\t\t';
