@@ -79,7 +79,8 @@ $(document).ready(function (){
 	var $input =$("#addr_input")
 	  , $input2 = $("#other_input")
 	  , $output = $("#addr_output")
-	  , $output2 = $("#addr_output2")
+	  , $output21 = $("#addr_output21")
+	  , $output22 = $("#addr_output22")
 	  , $output3 = $("#addr_output3")
 	  , $output4 = $("#addr_output4")
 	  , addr_output = {};
@@ -125,16 +126,16 @@ $(document).ready(function (){
 	}
 
 	var format_addr_string = function(val) {
-		var split_join_dot = function(string) {return string.split_join('.', '.'+nbsp)}; // д.6 -> д. 6 
-		val = val.split(',').trim().map(split_join_dot).join(', '); // г. Москва,д. 6 -> г. Москва, д. 6 
+		var split_join_dot = function(string) {return string.split_join('.', '.'+nbsp)}; // д.6 -> д. 6
+		val = val.split(',').trim().map(split_join_dot).join(', '); // г. Москва,д. 6 -> г. Москва, д. 6
 		return val
 			.replace("."+nbsp+",", '.,') // обл. , -> обл.,
 			.replace(/россия,/i, "")
-			.replace("область", "обл.")
-			.replace("район", "р-н")
-			.replace("р-он", "р-н")
-			.replace("пос", "п")
-			.replace("город", "г")
+			.replace(/(\ |^)область/g, "$1обл.")
+			.replace(/(\ |^)район/g, "$1р-н")
+			.replace(/(\ |^)р-он/g, "$1р-н")
+			.replace(/(\ |^)пос/g, "$1п")
+			.replace(/(\ |^)город/g, "$1г")
 			.add_dot(["обл", "г", "п", "ул", "д"])
 			.trim()
 			.prepend_nbsp(["обл.", "р-н"])
@@ -171,14 +172,15 @@ $(document).ready(function (){
 		var title = JSON.stringify(out, null, 2).replace(RegExp(nbsp, 'g'), '_');
 		$output.attr('title', title);
 		$output.val([out.name, out.rgn+',', out.addr, out.index].join('\t'));
-		var tabs = '\t\t\t';
-		$output2.val(out.name+'\n'+[out.index, out.rgn, out.addr].join(', ')+tabs);
+		$output21.val(out.name);
+		$output22.val([out.index, out.rgn, out.addr].join(', '));
 
 	};
 
 	var parse_sum = function() {
 		var val = $input2.val().split('\n').trim();
 		val = val.filter(function(e) {return e;});
+		if (!val[0]) return;
 		var sum = val[0].replace(/\s/g, '')
 		  , code = val[1];
 		$output3.val(number_to_string(sum));
