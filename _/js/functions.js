@@ -197,7 +197,12 @@ $(document).ready(function (){
 	bind_to_storage($input, 'addr_input', change);
 	bind_to_storage($input2, 'sum_input', change).change();
 
-	$("textarea, input").click(function() {
-		$(this).select()
+	$("textarea, input").mouseup(function() {
+		var textarea = $(this);
+		var ss = textarea[0].selectionStart;
+		var se = textarea[0].selectionEnd;
+		if (ss === se) {
+			textarea.select();
+		}
 	})
 });
