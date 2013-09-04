@@ -116,9 +116,11 @@ $(document).ready(function (){
 	var format_name_string = function(val) {
 		return val
 			.replace(/муниципальное унитарное предприятие/i, "МУП")
+			.replace(/государственное унитарное предприятие/i, "ГУП")
 			.replace(/общество с ограниченной ответственностью/i, "ООО")
 			.replace(/открытое акционерное общество/i, "ОАО")
 			.replace(/закрытое акционерное общество/i, "ЗАО")
+			.replace(/индивидуальный предприниматель/i, "ИП")
 			.trim();
 	}
 
@@ -132,9 +134,11 @@ $(document).ready(function (){
 			.replace("район", "р-н")
 			.replace("р-он", "р-н")
 			.replace("пос", "п")
+			.replace("город", "г")
 			.add_dot(["обл", "г", "п", "ул", "д"])
 			.trim()
-			.prepend_nbsp(["обл.", "р-н"]);
+			.prepend_nbsp(["обл.", "р-н"])
+			.replace(" д.", nbsp+"д.");
 	}
 
 	var format_addr = function(val) {
